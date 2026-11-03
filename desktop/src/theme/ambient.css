@@ -1,0 +1,524 @@
+/* Cherry-blossom theme window: transparent, never interactive. */
+html:has(body.ambient-body),
+body.ambient-body,
+body.ambient-body #root {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+  pointer-events: none;
+  user-select: none;
+}
+
+.ambient-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  image-rendering: pixelated;
+}
+
+/* The background world: the bottom layer. It only takes the pointer while exploring. */
+.world-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  image-rendering: pixelated;
+}
+
+.world-layer[hidden] {
+  display: none;
+}
+
+html:has(body.world-nav),
+body.ambient-body.world-nav,
+body.ambient-body.world-nav #root {
+  pointer-events: auto;
+}
+
+body.world-nav .world-layer {
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: none;
+}
+
+body.world-nav .world-layer:active {
+  cursor: grabbing;
+}
+
+/* The explore bar, just below the menu bar. */
+.world-hud {
+  position: fixed;
+  top: calc(var(--menu-bar, 25px) + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 4px 6px;
+  max-width: calc(100vw - 32px);
+  padding: 5px 8px;
+  pointer-events: auto;
+  font: 600 13px/1.2 Andy, ui-rounded, "SF Pro Rounded", -apple-system, sans-serif;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000;
+  background: rgba(24, 32, 78, 0.92);
+  border: 2px solid #0f1638;
+  border-radius: 5px;
+  box-shadow: inset 0 0 0 1px rgba(120, 140, 230, 0.35), 0 4px 10px rgba(0, 0, 0, 0.4);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.world-hint {
+  color: #c4cbec;
+  font-size: 12px;
+  margin-right: 4px;
+}
+
+.world-btn {
+  font: inherit;
+  font-size: 12px;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000;
+  background: rgba(46, 60, 140, 0.92);
+  border: 2px solid #18205a;
+  border-radius: 4px;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+
+.world-btn:hover,
+.world-btn.on {
+  border-color: #f3cf4c;
+}
+
+/* ── Playing the world (Control Mode) ─────────────────────────────────────────────────────── */
+html:has(body.world-play),
+body.ambient-body.world-play,
+body.ambient-body.world-play #root {
+  pointer-events: auto;
+}
+
+body.world-play .world-layer {
+  pointer-events: auto;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.game-hud {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  font: 600 13px/1.25 Andy, ui-rounded, "SF Pro Rounded", -apple-system, sans-serif;
+  color: #fff;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.game-hud button,
+.game-hud .game-panel {
+  pointer-events: auto;
+}
+
+.game-top {
+  position: absolute;
+  left: 16px;
+  top: calc(var(--menu-bar, 25px) + 10px);
+  max-width: calc(100vw - 260px);
+}
+
+.game-held {
+  min-height: 16px;
+  margin: 0 0 3px 4px;
+}
+
+.game-hotbar,
+.game-grid,
+.game-crafts {
+  display: grid;
+  grid-template-columns: repeat(10, 42px);
+  gap: 3px;
+}
+
+.game-crafts {
+  grid-template-columns: repeat(auto-fill, 42px);
+  max-width: calc(10 * 45px);
+  max-height: 140px;
+  overflow-y: auto;
+}
+
+.game-slot {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: none;
+  background: center / 100% 100% no-repeat;
+  opacity: 0.88;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  image-rendering: pixelated;
+}
+
+.game-slot.selected {
+  opacity: 1;
+  transform: scale(1.06);
+}
+
+.game-slot img {
+  max-width: 30px;
+  max-height: 30px;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.game-slot-key {
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  font-size: 10px;
+}
+
+.game-slot-count {
+  position: absolute;
+  left: 6px;
+  bottom: 2px;
+  font-size: 11px;
+}
+
+.game-slot-placeholder {
+  font-size: 9px;
+  color: #c4cbec;
+}
+
+.game-panel {
+  margin-top: 6px;
+}
+
+.game-panel[hidden] {
+  display: none;
+}
+
+.game-panel-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.game-armor {
+  display: grid;
+  gap: 3px;
+  justify-items: center;
+}
+
+.game-defense {
+  font-size: 11px;
+  margin-bottom: 2px;
+}
+
+.game-section {
+  margin: 8px 0 4px 2px;
+}
+
+.game-note {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #ffe9a8;
+}
+
+.game-right {
+  position: absolute;
+  right: 16px;
+  top: calc(var(--menu-bar, 25px) + 10px);
+  width: 230px;
+  text-align: right;
+}
+
+.game-hearts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 1px;
+}
+
+.game-hearts img {
+  width: 22px;
+  height: 22px;
+  image-rendering: pixelated;
+}
+
+.game-life-text,
+.game-clock {
+  margin-top: 2px;
+}
+
+.game-messages {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--menu-bar, 25px) + 70px);
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: 16px;
+  color: #ffe14d;
+}
+
+.game-boss {
+  position: absolute;
+  left: 50%;
+  bottom: 90px;
+  transform: translateX(-50%);
+  width: min(520px, 60vw);
+  text-align: center;
+}
+
+.game-boss[hidden] {
+  display: none;
+}
+
+.game-boss-bar {
+  height: 12px;
+  margin-top: 3px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid #1a0d0d;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.game-boss-fill {
+  height: 100%;
+  background: linear-gradient(#ff5a5a, #b31d1d);
+}
+
+.game-hint {
+  position: absolute;
+  left: 16px;
+  bottom: 90px;
+  font-size: 11px;
+  color: #d7dcf5;
+  opacity: 0.85;
+}
+
+.game-leave {
+  position: absolute;
+  right: 16px;
+  bottom: 90px;
+  font: inherit;
+  font-size: 12px;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000;
+  background: rgba(46, 60, 140, 0.92);
+  border: 2px solid #18205a;
+  border-radius: 4px;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+
+.game-leave:hover {
+  border-color: #f3cf4c;
+}
+
+.game-cursor-item {
+  position: fixed;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.game-cursor-item[hidden],
+.game-tip[hidden] {
+  display: none;
+}
+
+.game-tip {
+  position: fixed;
+  max-width: 260px;
+  padding: 4px 6px;
+  white-space: pre-line;
+  font-size: 12px;
+  background: rgba(16, 22, 56, 0.85);
+  border: 1px solid #3a4a92;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* Building mode: the waifus play, you watch. */
+.auto-card {
+  position: absolute;
+  left: 16px;
+  top: calc(var(--menu-bar, 25px) + 10px);
+  width: 280px;
+  padding: 10px 12px;
+  background: rgba(24, 30, 80, 0.78);
+  border: 2px solid #18205a;
+  border-radius: 6px;
+  pointer-events: auto;
+}
+
+.auto-title {
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
+.auto-bar {
+  height: 8px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid #000;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.auto-fill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #f3cf4c, #7ee07a);
+  transition: width 0.4s ease;
+}
+
+.auto-needs {
+  margin: 6px 0;
+  font-size: 12px;
+  color: #d7dcf5;
+}
+
+.auto-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.auto-who,
+.auto-speed-btn {
+  font: inherit;
+  font-size: 12px;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000;
+  text-align: left;
+  background: rgba(46, 60, 140, 0.7);
+  border: 1px solid #18205a;
+  border-radius: 4px;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+
+.auto-who.on,
+.auto-speed-btn.on,
+.auto-who:hover,
+.auto-speed-btn:hover {
+  border-color: #f3cf4c;
+}
+
+.auto-speed {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+/* Dragging the bare desktop moves around the world (only where no app window covers it). */
+html:has(body.world-pan),
+body.ambient-body.world-pan,
+body.ambient-body.world-pan #root {
+  pointer-events: auto;
+}
+
+body.world-pan .world-layer {
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: none;
+}
+
+body.world-panning .world-layer {
+  cursor: grabbing;
+}
+
+/* The adventure HUD (on top of the building-mode card styles). */
+.adv-card {
+  width: 320px;
+  max-height: calc(100vh - var(--menu-bar, 25px) - 90px);
+  overflow-y: auto;
+}
+
+.adv-focus {
+  font-size: 13px;
+  color: #f3cf4c;
+  margin-bottom: 6px;
+}
+
+.adv-event {
+  margin-bottom: 6px;
+}
+
+.adv-event[hidden],
+.adv-places[hidden] {
+  display: none;
+}
+
+.adv-event-label {
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+
+.adv-event-fill.boss {
+  background: linear-gradient(90deg, #e8433a, #f08a3a);
+}
+
+.adv-bosses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin: 4px 0 8px;
+}
+
+.adv-boss {
+  font-size: 11px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.35);
+  color: #9aa3cf;
+}
+
+.adv-boss.down {
+  background: rgba(60, 140, 70, 0.7);
+  color: #fff;
+}
+
+.adv-journal {
+  margin: 8px 0 6px;
+  font-size: 11px;
+  color: #c9d0f2;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.adv-places-btn {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.adv-places {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+/* The crown window: each map's decorations in the menu bar's strip (click-through). */
+canvas.crown {
+  position: fixed;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  image-rendering: pixelated;
+}

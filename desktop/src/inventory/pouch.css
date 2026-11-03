@@ -1,0 +1,404 @@
+/* The notch's compact inventory, in CustomNotch's look: near-black panel with a soft top sheen,
+   hairline white borders, SF type in white at falling opacities, capsule controls. */
+
+html:has(body.pouch-body),
+body.pouch-body {
+  margin: 0;
+  background: transparent;
+  overflow: hidden;
+}
+
+body.pouch-body {
+  --p-text: rgba(255, 255, 255, 0.94);
+  --p-secondary: rgba(255, 255, 255, 0.55);
+  --p-tertiary: rgba(255, 255, 255, 0.35);
+  --p-fill: rgba(255, 255, 255, 0.05);
+  --p-fill-hover: rgba(255, 255, 255, 0.1);
+  --p-hairline: rgba(255, 255, 255, 0.08);
+  --p-green: #34c759;
+  color: var(--p-text);
+  font: 12px/1.35 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+}
+
+.pouch {
+  box-sizing: border-box;
+  position: absolute;
+  inset: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 14px 12px;
+  border-radius: 22px;
+  background:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.07), transparent 45%),
+    rgb(19, 19, 19);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 4px 14px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  animation: pouch-in 0.32s cubic-bezier(0.2, 0.9, 0.25, 1.05);
+}
+
+@keyframes pouch-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+}
+
+/* (Zero specificity, so each control's own rules win.) */
+:where(.pouch) button {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: default;
+}
+
+.pouch button:focus-visible {
+  outline: 2px solid rgba(10, 132, 255, 0.9);
+  outline-offset: 1px;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────────────────────────── */
+
+.pouch-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pouch-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.pouch-title h1 {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.pouch-title p {
+  margin: 1px 0 0;
+  font-size: 11px;
+  color: var(--p-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pouch-title strong {
+  font-weight: 600;
+}
+
+.pouch-close {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  transition: background 0.15s ease-out;
+}
+
+.pouch-close:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.pouch-close svg {
+  width: 8px;
+  height: 8px;
+  stroke: rgba(255, 255, 255, 0.6);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.pouch-close:hover svg {
+  stroke: rgba(255, 255, 255, 0.9);
+}
+
+/* ── Capsule buttons ────────────────────────────────────────────────────────────────────────── */
+
+.pouch-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  transition:
+    background 0.15s ease-out,
+    transform 0.12s ease-out;
+}
+
+.pouch-pill:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.pouch-pill:active,
+.pouch-close:active,
+.pouch-slot:active {
+  transform: scale(0.94);
+}
+
+.pouch-pill.accent {
+  background: rgba(10, 132, 255, 0.85);
+  box-shadow: none;
+}
+
+.pouch-pill.accent:hover {
+  background: rgb(10, 132, 255);
+}
+
+.pouch-pill .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transition: background 0.2s;
+}
+
+.pouch-pill.on {
+  background: rgba(52, 199, 89, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(52, 199, 89, 0.35);
+}
+
+.pouch-pill.on .dot {
+  background: var(--p-green);
+  box-shadow: 0 0 6px rgba(52, 199, 89, 0.8);
+}
+
+/* ── Filter tabs (like CustomNotch's resource tabs) ────────────────────────────────────────── */
+
+.pouch-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--p-fill);
+}
+
+.pouch-tabs button {
+  flex: 1;
+  height: 22px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--p-secondary);
+  transition:
+    background 0.2s ease-out,
+    color 0.2s ease-out;
+}
+
+.pouch-tabs button:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.pouch-tabs button.active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.13);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* ── Slots ──────────────────────────────────────────────────────────────────────────────────── */
+
+.pouch-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pouch-row {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 3px;
+}
+
+/* The hotbar sits a little apart, like the dock above the apps. */
+.pouch-row.hotbar {
+  padding-bottom: 5px;
+  margin-bottom: 2px;
+  border-bottom: 1px solid var(--p-hairline);
+}
+
+.pouch-slot {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  background: var(--p-fill);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  transition:
+    background 0.12s ease-out,
+    box-shadow 0.12s ease-out,
+    opacity 0.15s,
+    transform 0.12s ease-out;
+}
+
+.hotbar .pouch-slot {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.pouch-slot:hover,
+.pouch-slot.inspected {
+  background: var(--p-fill-hover);
+}
+
+.pouch-slot.selected {
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow:
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.75),
+    0 0 8px rgba(255, 255, 255, 0.12);
+}
+
+.pouch-slot.dim {
+  opacity: 0.28;
+}
+
+.pouch-slot.dragging {
+  opacity: 0.4;
+}
+
+.pouch-slot img {
+  position: absolute;
+  inset: 14%;
+  width: 72%;
+  height: 72%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.pouch-slot .key {
+  position: absolute;
+  top: 1px;
+  left: 3px;
+  font: 600 7.5px/1 ui-rounded, -apple-system, sans-serif;
+  color: var(--p-tertiary);
+  pointer-events: none;
+}
+
+/* ── Details ────────────────────────────────────────────────────────────────────────────────── */
+
+.pouch-card {
+  border-radius: 14px;
+  background: var(--p-fill);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+  padding: 10px 11px;
+}
+
+.pouch-details {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.pouch-details-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.pouch-details-head > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.pouch-details h2 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pouch .sub {
+  margin: 1px 0 0;
+  font-size: 11px;
+  color: var(--p-secondary);
+  text-transform: capitalize;
+}
+
+.pouch .sub.empty {
+  text-transform: none;
+  margin: auto 0;
+  text-align: center;
+}
+
+.pouch-details dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px 8px;
+}
+
+.pouch-details dt {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--p-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pouch-details dd {
+  margin: 0;
+  font: 500 11.5px/1.25 ui-rounded, -apple-system, sans-serif;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.pouch-details .desc {
+  margin: 0;
+  font-size: 11px;
+  color: var(--p-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── Training ───────────────────────────────────────────────────────────────────────────────── */
+
+.pouch-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.pouch-keys {
+  margin: -2px 0 0;
+  font-size: 10px;
+  line-height: 1.6;
+  color: var(--p-tertiary);
+  text-align: center;
+}
+
+.pouch-keys kbd {
+  font: 600 9px/1 ui-rounded, -apple-system, sans-serif;
+  padding: 1px 4px;
+  border: 0;
+  border-radius: 4px;
+  box-shadow: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--p-secondary);
+}

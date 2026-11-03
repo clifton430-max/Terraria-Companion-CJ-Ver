@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "dock",
+  "description": "The dock may start a native window drag from its grip (nothing else beyond core).",
+  "windows": ["dock"],
+  "permissions": ["core:window:allow-start-dragging"]
+}

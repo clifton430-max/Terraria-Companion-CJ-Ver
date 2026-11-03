@@ -1,0 +1,165 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Terraria Companion CJ Ver",
+  "version": "0.1.0",
+  "identifier": "com.terrariacompanion.cjver",
+  "build": {
+    "beforeDevCommand": "sh src-tauri/helpers/build.sh && npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "sh src-tauri/helpers/build.sh && npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "macOSPrivateApi": true,
+    "windows": [
+      {
+        "label": "ambient",
+        "url": "index.html",
+        "acceptFirstMouse": true,
+        "decorations": false,
+        "transparent": true,
+        "alwaysOnBottom": true,
+        "skipTaskbar": true,
+        "shadow": false,
+        "visible": false,
+        "focus": false,
+        "focusable": false,
+        "visibleOnAllWorkspaces": true,
+        "resizable": false,
+        "backgroundThrottling": "disabled"
+      },
+      {
+        "label": "decor",
+        "url": "index.html",
+        "decorations": false,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "shadow": false,
+        "visible": false,
+        "focus": false,
+        "focusable": false,
+        "visibleOnAllWorkspaces": true,
+        "resizable": false,
+        "backgroundThrottling": "disabled"
+      },
+      {
+        "label": "crown",
+        "url": "index.html",
+        "decorations": false,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "shadow": false,
+        "visible": false,
+        "focus": false,
+        "focusable": false,
+        "visibleOnAllWorkspaces": true,
+        "resizable": false,
+        "backgroundThrottling": "disabled"
+      },
+      {
+        "label": "overlay",
+        "title": "Terraria Companion CJ Ver",
+        "url": "index.html",
+        "width": 480,
+        "height": 320,
+        "decorations": false,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "resizable": false,
+        "shadow": false,
+        "visible": false,
+        "focus": false,
+        "acceptFirstMouse": true,
+        "visibleOnAllWorkspaces": true,
+        "backgroundThrottling": "disabled"
+      },
+      {
+        "label": "inventory",
+        "title": "Menu",
+        "url": "index.html",
+        "width": 1280,
+        "height": 800,
+        "minWidth": 560,
+        "minHeight": 460,
+        "resizable": true,
+        "maximizable": false,
+        "minimizable": false,
+        "visible": false,
+        "center": true
+      },
+      {
+        "label": "pouch",
+        "title": "Inventory",
+        "url": "index.html",
+        "width": 340,
+        "height": 536,
+        "decorations": false,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "resizable": false,
+        "shadow": false,
+        "visible": false,
+        "acceptFirstMouse": true,
+        "visibleOnAllWorkspaces": true,
+        "maximizable": false,
+        "minimizable": false
+      },
+      {
+        "label": "dock",
+        "title": "Terraria Companion CJ Ver Dock",
+        "url": "index.html",
+        "width": 480,
+        "height": 96,
+        "decorations": false,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "resizable": false,
+        "shadow": false,
+        "visible": false,
+        "focus": false,
+        "focusable": false,
+        "acceptFirstMouse": true,
+        "visibleOnAllWorkspaces": true,
+        "maximizable": false,
+        "minimizable": false
+      },
+      {
+        "label": "chat",
+        "title": "Chat with Companion",
+        "url": "index.html",
+        "width": 420,
+        "height": 580,
+        "minWidth": 340,
+        "minHeight": 420,
+        "resizable": true,
+        "maximizable": false,
+        "minimizable": false,
+        "visible": false,
+        "center": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "externalBin": [
+      "bin/speech-helper",
+      "bin/ocr-helper"
+    ]
+  }
+}

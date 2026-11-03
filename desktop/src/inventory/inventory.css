@@ -1,0 +1,977 @@
+body.inventory-body {
+  margin: 0;
+  background: #161b33;
+  color: #e9ecf8;
+  font: 13px/1.4 -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.inventory {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.inventory-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.inventory-header h1 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.equipped {
+  font-size: 12px;
+  color: #b8bfe0;
+}
+
+.muted,
+.category,
+.keys {
+  color: #8f97bd;
+  font-size: 11px;
+}
+
+.filters {
+  display: flex;
+  gap: 4px;
+}
+
+.filter,
+.action {
+  font: inherit;
+  font-size: 12px;
+  color: #dfe4fb;
+  background: #222b55;
+  border: 1px solid #3a4a92;
+  border-radius: 5px;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+
+.filter:hover,
+.action:hover {
+  border-color: #6d7fd6;
+}
+
+.filter.active,
+.action.on {
+  background: #3a4a92;
+  border-color: #f3cf4c;
+  color: #fff;
+}
+
+.filter:focus-visible,
+.action:focus-visible,
+.slot:focus-visible {
+  outline: 2px solid #9fb4ff;
+  outline-offset: 1px;
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 44px));
+  gap: 4px;
+}
+
+.row.hotbar {
+  margin-bottom: 6px;
+}
+
+.slot {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 2px solid #2c3870;
+  border-radius: 6px;
+  background: #222b55;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: opacity 120ms;
+}
+
+.hotbar .slot {
+  background: #283466;
+  border-color: #3a4a92;
+}
+
+.slot:hover,
+.slot.inspected {
+  border-color: #6d7fd6;
+}
+
+.slot.selected {
+  border-color: #f3cf4c;
+  box-shadow: 0 0 0 1px #f3cf4c inset;
+}
+
+.slot.dim {
+  opacity: 0.3;
+}
+
+.slot.dragging {
+  opacity: 0.5;
+}
+
+.slot img {
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.slot-key {
+  position: absolute;
+  top: 1px;
+  left: 4px;
+  font-size: 9px;
+  color: #8f97bd;
+}
+
+.panels {
+  display: grid;
+  /* minmax(0, …): the details column may shrink instead of pushing Training off-screen. */
+  grid-template-columns: minmax(0, 1fr) minmax(150px, 190px);
+  gap: 12px;
+  /* Each box keeps its own height (no empty band in the details box). */
+  align-items: start;
+}
+
+.details,
+.training {
+  background: #1d2446;
+  border: 1px solid #2c3870;
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+.details h2,
+.training h2 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.details .category {
+  margin: 0 0 6px;
+  text-transform: capitalize;
+}
+
+.details dl {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px 12px;
+  margin: 0 0 6px;
+}
+
+.details dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.details dt {
+  color: #8f97bd;
+}
+
+.details dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.description {
+  margin: 0 0 8px;
+  color: #c8cdea;
+}
+
+.training {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.keys {
+  margin: 2px 0 0;
+  line-height: 1.7;
+}
+
+kbd {
+  font: 10px ui-monospace, SFMono-Regular, Menlo, monospace;
+  background: #2a3466;
+  border: 1px solid #3a4a92;
+  border-radius: 3px;
+  padding: 0 3px;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.tab {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: #8f97bd;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+
+.tab.active {
+  color: #e9ecf8;
+  border-bottom-color: #f3cf4c;
+}
+
+.appearance {
+  display: grid;
+  grid-template-columns: 132px 1fr;
+  gap: 14px;
+  align-items: start;
+}
+
+.appearance-preview {
+  width: 120px;
+  height: 168px;
+  image-rendering: pixelated;
+  background: repeating-conic-gradient(#232b52 0% 25%, #1d2446 0% 50%) 0 0 / 16px 16px;
+  border: 1px solid #2c3870;
+  border-radius: 6px;
+}
+
+.appearance-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.appearance-fields label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #c8cdea;
+  text-transform: capitalize;
+}
+
+.appearance-fields select,
+.appearance-fields input[type="number"] {
+  font: inherit;
+  font-size: 12px;
+  background: #222b55;
+  color: #e9ecf8;
+  border: 1px solid #3a4a92;
+  border-radius: 4px;
+  padding: 2px 4px;
+  width: 90px;
+}
+
+.appearance-fields input[type="color"] {
+  width: 28px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid #3a4a92;
+  background: none;
+}
+
+.colors {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  gap: 6px 12px;
+}
+
+.appearance fieldset {
+  border: 1px solid #2c3870;
+  border-radius: 6px;
+  padding: 6px 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+
+.appearance legend {
+  font-size: 11px;
+  color: #8f97bd;
+}
+
+/* ── Terraria look ────────────────────────────────────────────────────────────────────────
+   Slot and panel textures come from the local install via CSS variables set in Inventory.tsx;
+   the colours underneath are the fallback when the art isn't available. */
+
+body.inventory-body {
+  background: linear-gradient(#1c2350, #10142e);
+  font-family: "Andy", ui-rounded, "SF Pro Rounded", -apple-system, sans-serif;
+  font-weight: 600;
+}
+
+.inventory,
+.inventory h2,
+.tab,
+.slot-key,
+.equipped,
+.companion-panel {
+  text-shadow:
+    -1px -1px 0 #0a0810,
+    1px -1px 0 #0a0810,
+    -1px 1px 0 #0a0810,
+    1px 1px 0 #0a0810;
+}
+
+.slot {
+  border: none;
+  border-radius: 0;
+  /* The colour is the shorthand's last layer (a later background-color would cancel it). */
+  background: var(--slot-back, none) center / 100% 100% no-repeat, rgba(63, 82, 151, 0.78);
+  image-rendering: pixelated;
+}
+
+.hotbar .slot {
+  background: var(--slot-back, none) center / 100% 100% no-repeat, rgba(63, 82, 151, 0.9);
+}
+
+.slot:hover,
+.slot.inspected {
+  filter: brightness(1.18);
+}
+
+.slot.selected {
+  background: var(--slot-selected, none) center / 100% 100% no-repeat, rgba(226, 190, 72, 0.85);
+  box-shadow: none;
+}
+
+.slot img {
+  width: auto;
+  height: auto;
+  max-width: 36px;
+  max-height: 36px;
+  object-fit: contain;
+}
+
+.slot-key {
+  color: #ffffff;
+  font-size: 10px;
+}
+
+.details,
+.training,
+.tpanel,
+.appearance fieldset {
+  border: 12px solid #18204a;
+  border-image: var(--panel-border, none) 12 fill / 12px / 0 stretch;
+  border-radius: 0;
+  background: rgba(63, 82, 151, 0.72);
+  background-clip: padding-box;
+  padding: 2px 4px;
+}
+
+.filter,
+.action {
+  background: rgba(63, 82, 151, 0.85);
+  border: 2px solid #0e1430;
+  border-radius: 3px;
+  color: #fff;
+  text-shadow: 1px 1px 0 #0a0810;
+}
+
+.filter.active,
+.action.on {
+  background: rgba(98, 120, 200, 0.95);
+  border-color: #e7c64a;
+  color: #fff3b0;
+}
+
+.action:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.action.small {
+  padding: 2px 8px;
+}
+
+.action.boss {
+  background: rgba(150, 40, 40, 0.9);
+}
+
+.tab.active {
+  color: #fff3b0;
+  border-bottom-color: #e7c64a;
+}
+
+.muted,
+.category,
+.keys,
+.details dt {
+  color: #c4cbec;
+}
+
+/* Panels flow into balanced columns (two in the 620 px window, one if it gets narrow): each keeps
+   its natural height, so a short panel never stretches to match its neighbour and nothing is
+   wider than the window. Wide panels (the character roster) span the full width. */
+.companion-panel {
+  column-width: 270px;
+  column-gap: 8px;
+  min-width: 0;
+}
+
+.companion-panel > * {
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  margin: 0 0 8px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.companion-panel > .wide {
+  column-span: all;
+  -webkit-column-span: all;
+}
+
+/* Long values (weapon names, sound options) wrap or truncate instead of widening a panel. */
+.tpanel {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.tpanel select,
+.tpanel input[type="range"] {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.slider > * {
+  min-width: 0;
+}
+
+.tpanel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tpanel h2 {
+  margin: 0;
+  font-size: 14px;
+  color: #fff3b0;
+}
+
+.tpanel .muted {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.choice-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.choice-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+
+.label {
+  font-size: 12px;
+  color: #c4cbec;
+  margin-right: 2px;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.word {
+  font: inherit;
+  font-size: 12px;
+  width: 110px;
+  background: #10142e;
+  color: #fff3b0;
+  border: 2px solid #0e1430;
+  border-radius: 3px;
+  padding: 2px 4px;
+  text-transform: uppercase;
+}
+
+.inventory {
+  box-sizing: border-box;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  min-width: 0;
+}
+
+/* The title and tabs stay reachable while a long tab scrolls underneath. */
+.inventory > .inventory-header {
+  position: sticky;
+  top: -14px;
+  z-index: 5;
+  margin: -14px -16px 0;
+  padding: 14px 16px 8px;
+  background: #1b2149;
+  box-shadow: 0 6px 8px -6px rgba(0, 0, 0, 0.55);
+}
+
+.inventory > * {
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.slider {
+  display: grid;
+  grid-template-columns: minmax(52px, 30%) minmax(0, 1fr) minmax(44px, auto);
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.slider span {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.slider select {
+  grid-column: 2 / 4;
+  font: inherit;
+  font-size: 12px;
+  background: #10142e;
+  color: #fff;
+  border: 2px solid #0e1430;
+  border-radius: 3px;
+}
+
+.skins {
+  margin-bottom: 8px;
+}
+
+/* Wraps into as many columns as fit, so every character stays reachable at any window width
+   (the whole inventory scrolls vertically). */
+.skin-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+  min-width: 0;
+}
+
+.skin-card {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  min-width: 0;
+  padding: 6px;
+  font: inherit;
+  color: #fff;
+  background: rgba(63, 82, 151, 0.85);
+  border: 2px solid #0e1430;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.skin-card.selected {
+  border-color: #e7c64a;
+  background: rgba(98, 120, 200, 0.95);
+}
+
+.skin-card:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.skin-preview {
+  width: 80px;
+  height: 112px;
+  image-rendering: pixelated;
+  background: repeating-conic-gradient(#232b52 0% 25%, #1d2446 0% 50%) 0 0 / 16px 16px;
+}
+
+.skin-detail,
+.skin-note,
+.skin-missing {
+  font-size: 10px;
+  color: #c4cbec;
+  text-align: center;
+  line-height: 1.25;
+}
+
+.skin-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 10px;
+  color: #fff3b0;
+}
+
+.awareness-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tpanel h3 {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #fff3b0;
+}
+
+.perm.ok {
+  color: #9dff9d;
+}
+
+.perm.off {
+  color: #ffb0b0;
+}
+
+.excluded,
+.rules {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.excluded li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.rules li {
+  border: 2px solid #0e1430;
+  border-radius: 3px;
+  background: rgba(20, 26, 60, 0.5);
+  padding: 3px 6px;
+}
+
+.rules li.disabled {
+  opacity: 0.6;
+}
+
+.rule-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rule-name {
+  flex: 1;
+  text-align: left;
+  font: inherit;
+  color: #fff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-shadow: 1px 1px 0 #0a0810;
+}
+
+.rule-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 6px 0 2px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 12px;
+}
+
+.field textarea,
+.tpanel select {
+  font: inherit;
+  font-size: 12px;
+  color: #fff;
+  background: #10142e;
+  border: 2px solid #0e1430;
+  border-radius: 3px;
+  padding: 3px;
+}
+
+.action.danger {
+  margin-left: auto;
+  background: rgba(150, 40, 40, 0.85);
+}
+
+.pose-grid {
+  display: grid;
+  /* As many pose cards per row as fit (six in a wide panel, three in a narrow column). */
+  grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+  gap: 4px;
+}
+
+.pose-card {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 3px;
+  font: inherit;
+  font-size: 10px;
+  color: #fff;
+  background: rgba(63, 82, 151, 0.85);
+  border: 2px solid #0e1430;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.pose-card.selected {
+  border-color: #e7c64a;
+}
+
+.pose-preview {
+  width: 40px;
+  height: 56px;
+  image-rendering: pixelated;
+}
+
+.muted.warn {
+  color: #ffd6a0;
+}
+
+.bookmarklet {
+  display: inline-block;
+  padding: 3px 10px;
+  border: 2px solid #e7c64a;
+  border-radius: 4px;
+  background: rgba(98, 120, 200, 0.95);
+  color: #fff3b0;
+  text-decoration: none;
+  cursor: grab;
+  text-shadow: 1px 1px 0 #0a0810;
+}
+
+.steps {
+  margin: 0;
+  padding-left: 18px;
+}
+
+textarea.code {
+  font: 10px ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: #c4cbec;
+  background: #10142e;
+  border: 2px solid #0e1430;
+  border-radius: 3px;
+  resize: none;
+  /* Copy-only (focus selects it all): its own scrolling would trap the panel's wheel/trackpad. */
+  overflow: hidden;
+}
+
+.keybinds {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px 10px;
+}
+
+.keybinds .muted,
+.keybinds > button {
+  grid-column: 1 / -1;
+}
+
+.keybind {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.block-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+  vertical-align: -3px;
+  image-rendering: pixelated;
+}
+
+.roster {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.roster-card {
+  border: 2px solid;
+  border-radius: 8px;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.roster-card.selected {
+  box-shadow: 0 0 0 2px rgba(255, 211, 106, 0.6);
+}
+
+.roster-card.missing {
+  opacity: 0.55;
+}
+
+.roster-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.muted.small {
+  font-size: 11px;
+}
+
+/* Maps tab. */
+.map-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 8px;
+}
+
+.map-preview {
+  width: 100%;
+  max-width: 240px;
+  height: auto;
+  image-rendering: pixelated;
+  border: 2px solid #0e1430;
+}
+
+.world-seed {
+  font: inherit;
+  font-size: 12px;
+  color: #fff;
+  background: rgba(16, 22, 56, 0.9);
+  border: 2px solid #0e1430;
+  border-radius: 3px;
+  padding: 2px 6px;
+  width: 150px;
+  max-width: 100%;
+}
+
+.world-play-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.world-blocked {
+  color: #ffd27a;
+}
+
+/* The saved-places gallery. */
+.places-filters {
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.places-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 8px;
+}
+
+.place-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  min-width: 0;
+  padding: 6px;
+  font: inherit;
+  color: #fff;
+  text-align: left;
+  background: rgba(63, 82, 151, 0.85);
+  border: 2px solid #0e1430;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.place-card:hover:not(:disabled),
+.place-card.selected {
+  border-color: #e7c64a;
+}
+
+.place-card:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.place-card strong {
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.place-preview {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: rgba(16, 22, 56, 0.9);
+  border: 2px solid #0e1430;
+  border-radius: 2px;
+}
+
+.place-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+}
+
+.place-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.place-tag {
+  font-size: 11px;
+  padding: 0 5px;
+  border-radius: 3px;
+  background: rgba(60, 140, 70, 0.75);
+}
+
+.place-tag.kind {
+  background: rgba(16, 22, 56, 0.7);
+}
+
+.place-progress {
+  display: block;
+  width: 100%;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid #000;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.place-progress > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #f3cf4c, #7ee07a);
+}

@@ -1,0 +1,594 @@
+/* The settings window as a slanted, deep-blue "pause menu" (PauseMenu.tsx). Original CSS: a
+   watery backdrop with light shafts and rising bubbles; a broad slab of open space in your
+   selected companion's colours where she hangs upside down by a rope over her name in huge
+   letters; big italic section names stepping down beside her, her colour sweeping behind the
+   chosen one; and an angled panel holding that section's settings (the existing panels, restyled
+   here). Everything is scoped to `.p3`. */
+
+.p3 {
+  --p3-deep: #04103a;
+  --p3-blue: #0b3ea8;
+  --p3-sky: #1d7bff;
+  --p3-cyan: #5fe0ff;
+  --p3-ice: #e9fbff;
+  --p3-red: #ff2a55;
+  --p3-ink: #061642;
+  --p3-font: "Avenir Next Condensed", "Futura", "Arial Narrow", system-ui, sans-serif;
+  /* Your selected companion's colours (set from PauseMenu); pink if none. */
+  --slab-top: #fff0f7;
+  --slab-bottom: #ffd3e8;
+  --accent: #e86aa8;
+  --slab-ink: #6b1d47;
+  --spring: cubic-bezier(0.2, 1.25, 0.35, 1);
+  --glide: cubic-bezier(0.16, 0.9, 0.2, 1);
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  color: var(--p3-ice);
+  font-family: -apple-system, "Avenir Next", system-ui, sans-serif;
+  background: var(--p3-deep);
+}
+
+/* ── Backdrop ─────────────────────────────────────────────────────────────────────────── */
+.p3-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 90% at 85% -10%, rgba(95, 224, 255, 0.35), transparent 55%),
+    linear-gradient(162deg, #020a2a 0%, #072a7a 46%, #0f58cf 78%, #1b78ff 100%);
+  animation: p3-in 0.45s ease-out;
+}
+.p3-rays {
+  position: absolute;
+  inset: -20%;
+  background: repeating-linear-gradient(104deg, rgba(255, 255, 255, 0.07) 0 34px, transparent 34px 120px, rgba(255, 255, 255, 0.04) 120px 150px, transparent 150px 260px);
+  mix-blend-mode: screen;
+  animation: p3-rays 18s linear infinite;
+  mask-image: linear-gradient(180deg, #000 0%, transparent 80%);
+}
+.p3-caustics {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(40% 18% at 30% 70%, rgba(127, 228, 255, 0.12), transparent 70%),
+    radial-gradient(30% 14% at 70% 85%, rgba(127, 228, 255, 0.1), transparent 70%),
+    radial-gradient(25% 12% at 55% 60%, rgba(255, 255, 255, 0.06), transparent 70%);
+  animation: p3-caustics 9s ease-in-out infinite alternate;
+}
+.p3-bubble {
+  position: absolute;
+  bottom: -20px;
+  border-radius: 50%;
+  border: 1px solid rgba(233, 251, 255, 0.55);
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.6), rgba(127, 228, 255, 0.08) 60%);
+  animation: p3-rise linear infinite;
+}
+
+/* ── The open space: a broad slab in her colours, where she hangs over her name ──────────── */
+.p3-slab {
+  position: absolute;
+  left: -6%;
+  top: -10%;
+  width: 62%;
+  height: 120%;
+  background: linear-gradient(170deg, var(--slab-top) 0%, var(--slab-bottom) 100%);
+  transform: skewX(-12deg);
+  transform-origin: top left;
+  box-shadow: 12px 0 0 var(--accent), 22px 0 40px rgba(2, 8, 30, 0.45);
+  animation: p3-slab-in 0.55s var(--glide) both;
+  z-index: 1;
+}
+.p3-slab-shine {
+  /* Soft diagonal stripes and a little dot pattern, so the space isn't flat. */
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 10px 10px, rgba(255, 255, 255, 0.55) 1.6px, transparent 2.4px) 0 0 / 22px 22px,
+    repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.35) 0 60px, transparent 60px 150px);
+  mix-blend-mode: soft-light;
+  opacity: 0.8;
+  animation: p3-shine 26s linear infinite;
+}
+.p3-hang {
+  position: absolute;
+  left: clamp(30px, 6vw, 110px);
+  top: 0;
+  z-index: 2;
+  pointer-events: none;
+  animation: p3-drop-in 0.9s var(--spring) 0.15s both;
+}
+.p3-hang-swing {
+  /* Swings from the rope's top, like a pendulum, with a slow bob. */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: top center;
+  animation: p3-sway 6.5s ease-in-out infinite, p3-bob 4.2s ease-in-out infinite;
+}
+.p3-rope {
+  width: 3px;
+  height: clamp(50px, 11vh, 110px);
+  background: repeating-linear-gradient(180deg, color-mix(in srgb, var(--slab-ink) 70%, white) 0 5px, var(--slab-ink) 5px 9px);
+  border-radius: 2px;
+}
+.p3-hang-figure {
+  /* Upside down: her feet up by the rope, head down. Big and crisp. */
+  width: clamp(150px, 17vw, 272px);
+  height: auto;
+  aspect-ratio: 80 / 112;
+  image-rendering: pixelated;
+  transform: rotate(180deg);
+  margin-top: -6%;
+  filter: drop-shadow(6px 8px 0 color-mix(in srgb, var(--accent) 45%, transparent));
+}
+.p3-name {
+  position: absolute;
+  left: clamp(16px, 2.6vw, 44px);
+  bottom: 58px;
+  /* Her own column under the figure, clear of the section names beside it. */
+  width: clamp(170px, 21vw, 330px);
+  z-index: 2;
+  font-family: var(--p3-font);
+  font-weight: 900;
+  font-style: italic;
+  font-size: clamp(44px, 6.6vw, 112px);
+  line-height: 0.86;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+  color: var(--accent);
+  -webkit-text-stroke: 2px var(--slab-ink);
+  text-shadow: 5px 5px 0 #fff, 9px 9px 0 color-mix(in srgb, var(--slab-ink) 80%, transparent);
+  transform: rotate(-8deg) skewX(-8deg);
+  transform-origin: left bottom;
+  animation: p3-name-in 0.7s var(--spring) 0.2s both;
+  pointer-events: none;
+}
+
+/* ── Clock ───────────────────────────────────────────────────────────────────────────── */
+.p3-clock {
+  position: absolute;
+  left: auto;
+  right: calc(46% + clamp(30px, 4vw, 60px));
+  top: clamp(12px, 2.4vh, 26px);
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--p3-font);
+  font-weight: 800;
+  font-style: italic;
+  transform: skewX(-8deg);
+  z-index: 3;
+  animation: p3-drop 0.5s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+.p3-date {
+  font-size: clamp(34px, 5vw, 58px);
+  line-height: 1;
+  color: #fff;
+  -webkit-text-stroke: 1.5px var(--slab-ink);
+  text-shadow: 3px 3px 0 var(--slab-ink);
+}
+.p3-day {
+  font-size: clamp(16px, 2vw, 22px);
+  padding: 1px 8px;
+  background: var(--slab-ink);
+  color: #fff;
+}
+.p3-moon {
+  width: clamp(24px, 3vw, 34px);
+  height: clamp(24px, 3vw, 34px);
+  align-self: center;
+  filter: drop-shadow(0 0 6px rgba(127, 228, 255, 0.7));
+}
+.p3-tod {
+  font-size: clamp(13px, 1.5vw, 17px);
+  color: var(--slab-ink);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ── The section list, down a diagonal ───────────────────────────────────────────────── */
+.p3-list {
+  position: absolute;
+  left: clamp(190px, 24vw, 380px);
+  top: clamp(84px, 13vh, 130px);
+  bottom: 54px;
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(0px, 0.6vh, 6px);
+  z-index: 2;
+}
+.p3-item {
+  position: relative;
+  align-self: flex-start;
+  margin-left: calc(var(--i) * clamp(6px, 1.1vw, 16px));
+  padding: 0 18px 0 10px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-family: var(--p3-font);
+  font-weight: 800;
+  font-style: italic;
+  font-size: clamp(24px, 3.3vw, 50px);
+  line-height: 1.04;
+  letter-spacing: -0.01em;
+  color: color-mix(in srgb, var(--slab-ink) 62%, transparent);
+  text-shadow: 2px 2px 0 rgba(255, 255, 255, 0.7);
+  transform: skewX(-10deg) translateX(0);
+  transform-origin: left center;
+  transition: color 0.14s, transform 0.28s var(--spring), text-shadow 0.14s;
+  animation: p3-item-in 0.55s var(--glide) both;
+  animation-delay: calc(0.12s + var(--i) * 0.04s);
+  outline: none;
+}
+.p3-label {
+  position: relative;
+  z-index: 1;
+}
+.p3-item.lit {
+  color: #fff;
+  text-shadow: 2px 2px 0 var(--slab-ink);
+  transform: skewX(-10deg) translateX(18px) scale(1.14);
+}
+/* The sweeping highlight: a white slab with a red shard poking out behind it. */
+.p3-shard {
+  /* On the pale slab the highlight is her strong colour, with a dark shard behind. */
+  position: absolute;
+  inset: 8% -8px 4% -8px;
+  background: var(--accent);
+  clip-path: polygon(0 12%, 100% 0, 96% 100%, 3% 88%);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.24s var(--spring);
+}
+.p3-shard::before {
+  content: "";
+  position: absolute;
+  left: -14px;
+  top: -18%;
+  width: 46%;
+  height: 136%;
+  background: var(--slab-ink);
+  clip-path: polygon(0 40%, 100% 0, 70% 100%);
+  z-index: -1;
+  transform: translateX(-6px);
+  transition: transform 0.3s var(--spring) 0.05s;
+}
+.p3-item.lit .p3-shard::before {
+  transform: translateX(0);
+}
+.p3-item.lit .p3-shard {
+  transform: scaleX(1);
+}
+.p3-item.active:not(.lit) {
+  color: var(--slab-ink);
+}
+.p3-item.active:not(.lit)::after {
+  /* The open section, when the pointer is elsewhere: a cyan tick before it. */
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 30%;
+  width: 6px;
+  height: 40%;
+  background: var(--accent);
+}
+.p3.focus-content .p3-item:not(.active):not(.lit) {
+  color: color-mix(in srgb, var(--slab-ink) 35%, transparent);
+}
+
+/* ── The section's panel ─────────────────────────────────────────────────────────────── */
+.p3-panel {
+  position: absolute;
+  right: clamp(8px, 1.6vw, 22px);
+  top: clamp(14px, 3vh, 30px);
+  bottom: 50px;
+  width: 46%;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(160deg, rgba(4, 16, 58, 0.92), rgba(6, 30, 92, 0.86));
+  clip-path: polygon(5% 0, 100% 0, 100% 100%, 0 100%);
+  border-right: 3px solid var(--p3-cyan);
+  box-shadow: inset 0 0 0 1px rgba(127, 228, 255, 0.25);
+  z-index: 2;
+  animation: p3-wipe 0.38s var(--glide) both;
+}
+.p3-head {
+  padding: 14px 22px 8px 9%;
+  border-bottom: 2px solid rgba(127, 228, 255, 0.35);
+  background: linear-gradient(90deg, transparent, rgba(29, 123, 255, 0.35));
+}
+.p3-head h1 {
+  margin: 0;
+  font-family: var(--p3-font);
+  font-weight: 800;
+  font-style: italic;
+  font-size: clamp(26px, 3.6vw, 44px);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--p3-ice);
+  transform: skewX(-8deg);
+  transform-origin: left;
+  animation: p3-title 0.4s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+.p3-head p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--p3-cyan);
+}
+.p3-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 18px 22px 8%;
+  outline: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--p3-cyan) transparent;
+}
+.p3-content > * {
+  animation: p3-rise-in 0.36s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+/* The existing panels, restyled inside the menu. */
+.p3-content .tpanel,
+.p3-content .details,
+.p3-content .training {
+  position: relative;
+  margin: 0 0 14px;
+  padding: 12px 14px 12px 16px;
+  background: linear-gradient(100deg, rgba(29, 123, 255, 0.16), rgba(4, 16, 58, 0.25));
+  border: 0;
+  border-left: 4px solid var(--p3-cyan);
+  border-radius: 0;
+  box-shadow: none;
+  color: var(--p3-ice);
+}
+.p3-content h2,
+.p3-content h3 {
+  font-family: var(--p3-font);
+  font-weight: 800;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--p3-ice);
+  text-shadow: 2px 2px 0 var(--p3-blue);
+  margin: 0 0 8px;
+}
+.p3-content h2 {
+  font-size: 22px;
+}
+.p3-content h3 {
+  font-size: 16px;
+  color: var(--p3-cyan);
+  text-shadow: none;
+}
+.p3-content .muted,
+.p3-content .small,
+.p3-content p {
+  color: rgba(233, 251, 255, 0.72);
+}
+.p3-content .warn {
+  color: #ffd166;
+}
+.p3-content label,
+.p3-content .label {
+  color: var(--p3-ice);
+}
+.p3-content .action,
+.p3-content .filter,
+.p3-content .sr-btn {
+  font-family: var(--p3-font);
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  color: var(--p3-ice);
+  background: rgba(4, 16, 58, 0.7);
+  border: 1.5px solid rgba(127, 228, 255, 0.55);
+  border-radius: 0;
+  clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+  padding: 5px 14px;
+  box-shadow: none;
+  transition: background 0.12s, color 0.12s, transform 0.12s;
+}
+.p3-content .action:hover,
+.p3-content .filter:hover,
+.p3-content .action:focus-visible,
+.p3-content .filter:focus-visible {
+  background: var(--p3-ice);
+  color: var(--p3-ink);
+  transform: translateX(2px);
+  outline: none;
+}
+.p3-content .action.on,
+.p3-content .filter.active {
+  background: var(--p3-cyan);
+  color: var(--p3-ink);
+  border-color: var(--p3-ice);
+}
+.p3-content .skin-card.selected,
+.p3-content .map-card.selected {
+  background: rgba(4, 16, 58, 0.85);
+  border-color: var(--p3-cyan);
+  box-shadow: 0 0 0 1px var(--p3-cyan), 0 0 18px rgba(127, 228, 255, 0.45);
+}
+.p3-content .action.on::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 6px;
+  background: var(--p3-red);
+  transform: rotate(45deg) translateY(-1px);
+}
+.p3-content .action:disabled {
+  opacity: 0.4;
+}
+.p3-content input[type="text"],
+.p3-content input:not([type]),
+.p3-content select,
+.p3-content textarea {
+  background: rgba(2, 8, 30, 0.75);
+  color: var(--p3-ice);
+  border: 1px solid rgba(127, 228, 255, 0.45);
+  border-radius: 0;
+}
+.p3-content input[type="range"],
+.p3-content input[type="checkbox"] {
+  accent-color: var(--p3-cyan);
+}
+.p3-content :focus-visible {
+  outline: 2px solid var(--p3-cyan);
+  outline-offset: 2px;
+}
+.p3-content .skin-card,
+.p3-content .map-card,
+.p3-content .roster-card {
+  background: rgba(4, 16, 58, 0.6);
+  border-radius: 0;
+  border: 1.5px solid rgba(127, 228, 255, 0.35);
+  color: var(--p3-ice);
+}
+.p3-content .roster-card.selected {
+  border-color: var(--p3-cyan);
+  box-shadow: 0 0 0 1px var(--p3-cyan), 0 0 16px rgba(127, 228, 255, 0.35);
+}
+.p3-content .tag,
+.p3-content .skin-badge {
+  background: var(--p3-red);
+  color: #fff;
+  border-radius: 0;
+  font-style: italic;
+}
+.p3-content kbd {
+  background: rgba(233, 251, 255, 0.12);
+  border: 1px solid rgba(127, 228, 255, 0.5);
+  color: var(--p3-ice);
+  border-radius: 2px;
+}
+
+/* ── Hints bar ───────────────────────────────────────────────────────────────────────── */
+.p3-hints {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 40px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 22px;
+  padding: 0 28px;
+  background: linear-gradient(90deg, transparent, rgba(2, 8, 30, 0.85) 30%);
+  font-family: var(--p3-font);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  z-index: 3;
+}
+.p3-hints kbd {
+  display: inline-block;
+  min-width: 20px;
+  margin-right: 4px;
+  padding: 1px 5px;
+  text-align: center;
+  font-style: normal;
+  color: var(--p3-ink);
+  background: var(--p3-ice);
+  clip-path: polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%);
+}
+
+/* ── Smaller windows: the list runs across the top ───────────────────────────────────── */
+@media (max-width: 860px) {
+  .p3-hang {
+    display: none;
+  }
+  .p3-slab {
+    width: 100%;
+    height: 34%;
+    transform: none;
+  }
+  .p3-name {
+    top: 8px;
+    bottom: auto;
+    left: auto;
+    right: 14px;
+    font-size: 34px;
+    max-width: 55%;
+    text-align: right;
+    transform: skewX(-8deg);
+  }
+  .p3-clock {
+    left: 14px;
+    right: auto;
+    transform: skewX(-8deg) scale(0.8);
+    transform-origin: left top;
+  }
+  .p3-list {
+    top: 64px;
+    bottom: auto;
+    left: 0;
+    right: 0;
+    width: auto;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 2px;
+    padding: 4px 12px 8px;
+    scrollbar-width: none;
+  }
+  .p3-item {
+    margin-left: 0;
+    font-size: 22px;
+    flex: none;
+  }
+  .p3-panel {
+    left: 8px;
+    right: 8px;
+    top: 118px;
+    width: auto;
+    clip-path: polygon(2% 0, 100% 0, 100% 100%, 0 100%);
+  }
+}
+
+/* ── Motion ─────────────────────────────────────────────────────────────────────────── */
+@keyframes p3-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes p3-rays { from { transform: translateX(0); } to { transform: translateX(260px); } }
+@keyframes p3-caustics { from { transform: translate(0, 0) scale(1); } to { transform: translate(-3%, 2%) scale(1.08); } }
+@keyframes p3-rise { from { transform: translateY(0); opacity: 0; } 12% { opacity: 0.8; } to { transform: translateY(-110vh) translateX(20px); opacity: 0; } }
+@keyframes p3-drop { from { transform: skewX(-8deg) translateY(-30px); opacity: 0; } to { transform: skewX(-8deg) translateY(0); opacity: 1; } }
+@keyframes p3-slab-in { from { transform: skewX(-12deg) translateX(-70%); } to { transform: skewX(-12deg) translateX(0); } }
+@keyframes p3-shine { from { background-position: 0 0, 0 0; } to { background-position: 220px 0, 600px 0; } }
+@keyframes p3-drop-in {
+  0% { transform: translateY(-120%); }
+  70% { transform: translateY(6%); }
+  100% { transform: translateY(0); }
+}
+@keyframes p3-sway { 0%, 100% { rotate: -3.5deg; } 50% { rotate: 3.5deg; } }
+@keyframes p3-bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 8px; } }
+@keyframes p3-name-in { from { opacity: 0; transform: rotate(-8deg) skewX(-8deg) translateX(-80px); } to { opacity: 1; transform: rotate(-8deg) skewX(-8deg) translateX(0); } }
+@keyframes p3-item-in { from { opacity: 0; translate: -60px 0; } to { opacity: 1; translate: 0 0; } }
+@keyframes p3-wipe {
+  from { clip-path: polygon(105% 0, 100% 0, 100% 100%, 100% 100%); opacity: 0.4; transform: skewX(-4deg) translateX(30px); }
+  to { clip-path: polygon(5% 0, 100% 0, 100% 100%, 0 100%); opacity: 1; transform: none; }
+}
+@keyframes p3-title { from { transform: skewX(-8deg) translateX(40px); opacity: 0; } to { transform: skewX(-8deg) translateX(0); opacity: 1; } }
+@keyframes p3-rise-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 860px) {
+  @keyframes p3-wipe {
+    from { clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%); }
+    to { clip-path: polygon(2% 0, 100% 0, 100% 100%, 0 100%); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .p3 *,
+  .p3 *::before,
+  .p3-bg {
+    animation-duration: 0.01s !important;
+    transition-duration: 0.01s !important;
+  }
+}

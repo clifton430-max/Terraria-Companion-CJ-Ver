@@ -1,0 +1,13 @@
+# Display names and tooltips. tModLoader adds entries for new content here after a build and reload.
+# See https://github.com/tModLoader/tModLoader/wiki/Localization
+
+Items: {
+	EmberBlade: {
+		DisplayName: Ember Blade
+		Tooltip:
+			'''
+			Sets enemies ablaze
+			'Still warm from the forge.'
+			'''
+	}
+}

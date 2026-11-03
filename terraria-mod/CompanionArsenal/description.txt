@@ -1,0 +1,6 @@
+Companion Arsenal adds weapons from the Terraria Desktop Companion to the game.
+
+Version 0.1 adds one weapon:
+- Ember Blade: a fiery melee sword that sets enemies on fire. Crafted from 12 Iron or Lead Bars and 25 Torches at an Anvil.
+
+All artwork is original. This mod uses only the public tModLoader API.

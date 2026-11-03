@@ -1,0 +1,19 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Capability for the companion overlay, inventory, pouch, dock, chat, theme and menu-bar windows",
+  "windows": [
+    "overlay",
+    "inventory",
+    "pouch",
+    "dock",
+    "chat",
+    "ambient",
+    "decor",
+    "crown"
+  ],
+  "permissions": [
+    "core:default",
+    "opener:default"
+  ]
+}

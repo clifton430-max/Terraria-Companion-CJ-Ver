@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>Terraria Companion CJ Ver listens only while you hold (or toggle) your voice-input shortcut, so you can ask your companion a question.</string>
+  <key>NSSpeechRecognitionUsageDescription</key>
+  <string>Terraria Companion CJ Ver turns your push-to-talk recording into text so it can answer you. Recognition runs on this Mac when supported.</string>
+</dict>
+</plist>

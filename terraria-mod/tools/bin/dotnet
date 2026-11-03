@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# `dotnet` shim used only by build.sh. tMLMod.targets' BuildMod step runs `dotnet tModLoader.dll -server -build`
+# through /bin/sh, and macOS System Integrity Protection strips DYLD_* variables when launching /bin/sh.
+# This re-applies the same native-library environment tModLoader's own launcher sets on macOS
+# (LaunchUtils/EnvironmentFix.sh) so FNA3D can be loaded while packaging textures, then runs the real SDK.
+set -euo pipefail
+: "${TML_DIR:?TML_DIR must be set by build.sh}"
+: "${TML_REAL_DOTNET:?TML_REAL_DOTNET must be set by build.sh}"
+if [[ "$(uname)" == "Darwin" ]]; then
+  export DYLD_LIBRARY_PATH="$TML_DIR/Libraries/Native/OSX"
+  export VK_ICD_FILENAMES="$TML_DIR/Libraries/Native/OSX/MoltenVK_icd.json"
+fi
+exec "$TML_REAL_DOTNET" "$@"

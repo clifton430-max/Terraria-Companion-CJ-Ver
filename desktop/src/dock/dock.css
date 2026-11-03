@@ -1,0 +1,215 @@
+/* Every rule is scoped to the dock window: all windows load this bundle, and generic names
+   (.slot, .grip, .name…) used to leak into the inventory (squashing its item slots). */
+/* Terraria-style dock. Slot and panel textures come from the local install via the CSS
+   variables in inventory/icons.ts; the colours underneath are fallbacks. */
+
+html:has(body.dock-body),
+body.dock-body {
+  margin: 0;
+  background: transparent;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  font: 600 12px/1 "Andy", ui-rounded, "SF Pro Rounded", -apple-system, sans-serif;
+  color: #fff;
+}
+
+body.dock-body .dock {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--gap);
+  padding: calc(var(--pad) - 6px);
+  border: 6px solid #18204a;
+  border-image: var(--panel-border, none) 12 fill / 6px / 0 stretch;
+  background: rgba(40, 52, 110, 0.82);
+  background-clip: padding-box;
+  image-rendering: pixelated;
+}
+
+body.dock-body .dock button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+body.dock-body .dock button:focus-visible {
+  outline: 2px solid #fff3b0;
+  outline-offset: 1px;
+}
+
+body.dock-body .grip {
+  align-self: stretch;
+  width: var(--grip);
+  cursor: grab;
+  /* Pixel dots, like a handle. */
+  background: radial-gradient(circle, #c4cbec 1px, transparent 1.5px) 0 0 / 6px 6px;
+  opacity: 0.75;
+}
+
+body.dock-body .grip:active {
+  cursor: grabbing;
+}
+
+body.dock-body .body {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+body.dock-body .name {
+  height: var(--name);
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow:
+    -1px -1px 0 #0a0810,
+    1px -1px 0 #0a0810,
+    -1px 1px 0 #0a0810,
+    1px 1px 0 #0a0810;
+}
+
+body.dock-body .content {
+  display: flex;
+  align-items: center;
+  gap: var(--gap);
+}
+
+body.dock-body .content.below {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+body.dock-body .slots {
+  display: grid;
+  gap: var(--gap);
+}
+
+body.dock-body .slot {
+  position: relative;
+  width: var(--slot);
+  height: var(--slot);
+  border: none;
+  background: var(--slot-back, none) center / 100% 100% no-repeat, rgba(63, 82, 151, 0.85);
+  display: grid;
+  place-items: center;
+}
+
+body.dock-body .slot:hover {
+  filter: brightness(1.2);
+}
+
+body.dock-body .slot.selected {
+  background: var(--slot-selected, none) center / 100% 100% no-repeat, rgba(226, 190, 72, 0.9);
+}
+
+body.dock-body .slot img {
+  max-width: calc(var(--slot) - 10px);
+  max-height: calc(var(--slot) - 10px);
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+body.dock-body .short,
+body.dock-body .badge {
+  position: absolute;
+  font-size: 9px;
+  text-shadow:
+    -1px -1px 0 #0a0810,
+    1px -1px 0 #0a0810,
+    -1px 1px 0 #0a0810,
+    1px 1px 0 #0a0810;
+  pointer-events: none;
+}
+
+body.dock-body .short {
+  left: 3px;
+  top: 2px;
+}
+
+body.dock-body .badge {
+  right: 2px;
+  bottom: 1px;
+  color: #fff3b0;
+}
+
+body.dock-body .divider {
+  width: 2px;
+  align-self: stretch;
+  margin: 4px var(--gap);
+  background: rgba(10, 8, 16, 0.45);
+}
+
+body.dock-body .actions {
+  display: flex;
+  gap: var(--gap);
+}
+
+body.dock-body .action-btn {
+  position: relative;
+  width: var(--action);
+  height: var(--action);
+  border: 2px solid #0e1430;
+  border-radius: 3px;
+  background: rgba(63, 82, 151, 0.92);
+  display: grid;
+  place-items: center;
+}
+
+body.dock-body .action-btn:hover {
+  filter: brightness(1.2);
+}
+
+body.dock-body .action-btn.on {
+  border-color: #e7c64a;
+  background: rgba(98, 120, 200, 0.95);
+}
+
+body.dock-body .action-btn.boss.on {
+  background: rgba(150, 40, 40, 0.92);
+}
+
+body.dock-body .action-btn img {
+  max-width: calc(var(--action) - 8px);
+  max-height: calc(var(--action) - 8px);
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+body.dock-body .action-btn.cursor img {
+  /* The 14 px pointer is tiny; show it at a crisp 2×. */
+  width: 20px;
+  height: 20px;
+}
+
+body.dock-body .controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  margin-left: auto;
+}
+
+body.dock-body .ctl {
+  width: var(--controls);
+  height: var(--controls);
+  border: 2px solid #0e1430;
+  border-radius: 3px;
+  background: rgba(30, 38, 86, 0.95);
+  font-size: 13px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  text-shadow: 1px 1px 0 #0a0810;
+}
+
+body.dock-body .ctl:hover {
+  background: rgba(98, 120, 200, 0.95);
+}
+
+body.dock-body .glyph {
+  font-size: 14px;
+  text-shadow: 1px 1px 0 #0a0810;
+}
