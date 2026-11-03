@@ -32,6 +32,8 @@ const GRAVITY = 1440;
 const MAX_FALL = 600;
 const REACH = 7; // tiles, for the builders (enough to roof a house from its attic)
 const ACT_TIME = 0.22; // seconds per swing / placement
+/** A builder this far from a task (tiles) is still on her way there, not stuck at it. */
+const WORK_NEAR_TILES = 30;
 /** Walking spots this close together, in the same direction, are one trip (see `sameTrip`). */
 const SAME_TRIP_TILES = 64;
 
@@ -1828,9 +1830,12 @@ export class Crew {
     }
     // The safety net: the same task for a long while without a single placement, chop or swing
     // (an upper floor's wall before the floor under it is built, a spot she circles but can't
-    // stand at...): put it off for a minute and take the next one.
+    // stand at...): put it off for a minute and take the next one. The clock only runs once she's
+    // at the site: the walk to a far-off build (minutes, for an estate across the world) isn't
+    // being stuck, and counting it had every task put off before she arrived.
     const w = this.working.get(a);
-    if (!w || w.task !== task) this.working.set(a, { task, since: this.clock });
+    const farAway = Math.abs((a.x + a.w / 2) / TILE - task.x) > WORK_NEAR_TILES;
+    if (!w || w.task !== task || farAway) this.working.set(a, { task, since: this.clock });
     else if (this.clock - w.since > WORK_LIMIT) {
       this.working.delete(a);
       this.defer(a, task, 60);
