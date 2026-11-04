@@ -51,13 +51,26 @@ pub fn parse_library_folders(text: &str) -> Vec<PathBuf> {
     text.lines()
         .filter_map(|line| {
             let mut parts = line.split('"').filter(|s| !s.trim().is_empty());
-            (parts.next()? == "path").then(|| parts.next().map(PathBuf::from)).flatten()
+            // (Windows paths are written with doubled backslashes, e.g. D:\\SteamLibrary.)
+            (parts.next()? == "path").then(|| parts.next().map(|p| PathBuf::from(p.replace("\\\\", "\\")))).flatten()
         })
         .collect()
 }
 
+#[cfg(not(windows))]
 fn default_steam_root() -> Option<PathBuf> {
     std::env::var_os("HOME").map(|h| PathBuf::from(h).join("Library/Application Support/Steam"))
+}
+
+/// Steam's usual install folder on Windows (the 32-bit Program Files, as Steam's installer uses).
+#[cfg(windows)]
+fn default_steam_root() -> Option<PathBuf> {
+    ["ProgramFiles(x86)", "ProgramFiles"]
+        .iter()
+        .filter_map(|v| std::env::var_os(v))
+        .map(|p| PathBuf::from(p).join("Steam"))
+        .find(|p| p.join("steamapps").is_dir())
+        .or_else(|| Some(PathBuf::from(r"C:\Program Files (x86)\Steam")))
 }
 
 /// Every Steam library on this Mac: the default one plus those in `libraryfolders.vdf`.
@@ -74,12 +87,11 @@ pub fn steam_libraries() -> Vec<PathBuf> {
 
 /// Local (non-Workshop) resource pack folders for vanilla Terraria and tModLoader.
 pub fn local_resource_pack_dirs() -> Vec<PathBuf> {
-    std::env::var_os("HOME")
-        .map(|h| {
-            let base = PathBuf::from(h).join("Library/Application Support/Terraria");
-            vec![base.join("ResourcePacks"), base.join("tModLoader/ResourcePacks")]
-        })
-        .unwrap_or_default()
+    #[cfg(windows)]
+    let base = std::env::var_os("USERPROFILE").map(|h| PathBuf::from(h).join(r"Documents\My Games\Terraria"));
+    #[cfg(not(windows))]
+    let base = std::env::var_os("HOME").map(|h| PathBuf::from(h).join("Library/Application Support/Terraria"));
+    base.map(|base| vec![base.join("ResourcePacks"), base.join("tModLoader/ResourcePacks")]).unwrap_or_default()
 }
 
 /// Inspect one Steam library (`<library>/steamapps`).
@@ -147,6 +159,12 @@ mod tests {
             parse_library_folders(vdf),
             vec![PathBuf::from("/Users/x/Library/Application Support/Steam"), PathBuf::from("/Volumes/Games/SteamLibrary")]
         );
+    }
+
+    #[test]
+    fn reads_windows_library_paths() {
+        let vdf = "\"libraryfolders\"\n{\n\t\"0\"\n\t{\n\t\t\"path\"\t\t\"D:\\\\SteamLibrary\"\n\t}\n}";
+        assert_eq!(parse_library_folders(vdf), vec![PathBuf::from("D:\\SteamLibrary")]);
     }
 
     #[test]

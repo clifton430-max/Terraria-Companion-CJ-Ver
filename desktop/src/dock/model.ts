@@ -101,7 +101,7 @@ export function equippedId(inv: InventoryState): string | null {
   return inv.slots[inv.selected] ?? null;
 }
 
-const DEFAULT_DOCK: DockPrefs = { visible: true, onLaunch: "remember", expanded: true, layout: "full", position: null };
+const DEFAULT_DOCK: DockPrefs = { visible: false, onLaunch: "remember", expanded: true, layout: "full", position: null };
 
 /** Defensive copy of possibly missing/old dock prefs (e.g. a stale frontend or old file). */
 export function normalizeDock(d: Partial<DockPrefs> | null | undefined): DockPrefs {

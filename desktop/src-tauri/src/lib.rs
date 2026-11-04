@@ -714,7 +714,7 @@ fn set_inventory_visible(app: &AppHandle, visible: bool) {
         }
     }
     if let Some(items) = app.try_state::<TrayItems>() {
-        let label = if visible { "Close Inventory" } else { "Open Inventory" };
+        let label = if visible { "Close Menu" } else { "Menu" };
         let _ = items.inventory.set_text(label);
     }
 }
@@ -918,6 +918,26 @@ fn spawn_app_watcher(app: AppHandle) {
                 let _ = app.emit(APP_SWITCH_EVENT, &ev);
             }
         }
+    });
+}
+
+/// Put a window in front of every other app's windows. A menu-bar app isn't brought forward when
+/// it starts, so its first window would open behind whatever you're using: float it on top for a
+/// moment, focused, then let it behave like a normal window again.
+fn bring_to_front(app: &AppHandle, label: &'static str) {
+    let Some(win) = app.get_webview_window(label) else { return };
+    let _ = win.set_always_on_top(true);
+    let _ = win.set_focus();
+    let app = app.clone();
+    std::thread::spawn(move || {
+        std::thread::sleep(std::time::Duration::from_millis(1200));
+        let handle = app.clone();
+        let _ = app.run_on_main_thread(move || {
+            if let Some(win) = handle.get_webview_window(label) {
+                let _ = win.set_always_on_top(false);
+                let _ = win.set_focus();
+            }
+        });
     });
 }
 
@@ -1243,7 +1263,7 @@ fn build_tray(app: &AppHandle, prefs: &Prefs) -> tauri::Result<()> {
         prefs.platforms,
         None::<&str>,
     )?;
-    let inventory = MenuItem::with_id(app, "inventory", "Open Inventory", true, None::<&str>)?;
+    let inventory = MenuItem::with_id(app, "inventory", "Menu", true, None::<&str>)?;
     let dock_item = MenuItem::with_id(
         app,
         "toggle_dock",
@@ -1368,9 +1388,12 @@ fn build_tray(app: &AppHandle, prefs: &Prefs) -> tauri::Result<()> {
     let world_menu = Submenu::with_items(app, "World", true, &[&world, &world_explore, &game_play, &game_auto, &game_stop])?;
     let quit = MenuItem::with_id(app, "quit", "Quit Terraria Companion CJ Ver", true, None::<&str>)?;
     let separator = PredefinedMenuItem::separator(app)?;
+    let separator_top = PredefinedMenuItem::separator(app)?;
     let menu = Menu::with_items(
         app,
         &[
+            &inventory,
+            &separator_top,
             &toggle_visible,
             &pause,
             &platforms,
@@ -1385,7 +1408,6 @@ fn build_tray(app: &AppHandle, prefs: &Prefs) -> tauri::Result<()> {
             &chat_item,
             &app_awareness,
             &quiet,
-            &inventory,
             &dock_item,
             &training_menu,
             &size_menu,
@@ -2592,6 +2614,8 @@ pub fn run() {
             app.set_activation_policy(tauri::ActivationPolicy::Accessory);
 
             let prefs_path = app.path().app_config_dir()?.join("prefs.json");
+            // First launch: no preferences saved yet (the Menu opens so there's somewhere to start).
+            let first_launch = !prefs_path.exists();
             let mut prefs = prefs::load(&prefs_path);
             // "Dock visible on launch" (remember / always / never).
             prefs.dock.visible = prefs.dock.launch_visible();
@@ -2673,6 +2697,14 @@ pub fn run() {
             spawn_destroyer_link(app.handle().clone());
             spawn_notch_link(app.handle().clone());
             spawn_demo(app.handle().clone());
+            if first_launch {
+                set_inventory_visible(app.handle(), true);
+                bring_to_front(app.handle(), INVENTORY);
+                // Save now, so the next launch isn't a first launch.
+                let state = app.state::<AppState>();
+                let p = state.prefs.lock().unwrap().clone();
+                let _ = prefs::save(&state.prefs_path, &p);
+            }
             Ok(())
         })
         .on_window_event(|window, event| match event {

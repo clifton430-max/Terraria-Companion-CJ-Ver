@@ -874,7 +874,8 @@ impl Default for Prefs {
         Self {
             visible: true,
             paused: false,
-            scale: 3,
+            // New installs start small.
+            scale: 2,
             walk_speed: 70.0,
             last_x: None,
             platforms: true,
@@ -968,7 +969,8 @@ pub struct DockPrefs {
 
 impl Default for DockPrefs {
     fn default() -> Self {
-        Self { visible: true, on_launch: DockLaunch::Remember, expanded: true, layout: DockLayout::Full, position: None }
+        // Hidden until you open it (from the menu bar or the Menu).
+        Self { visible: false, on_launch: DockLaunch::Remember, expanded: true, layout: DockLayout::Full, position: None }
     }
 }
 
@@ -1842,12 +1844,14 @@ mod tests {
     #[test]
     fn dock_defaults_patches_and_stale_values() {
         let mut p = Prefs::default();
-        assert!(p.dock.visible && p.dock.expanded && p.dock.position.is_none());
+        // A new install starts with the dock hidden, and small.
+        assert!(!p.dock.visible && p.dock.expanded && p.dock.position.is_none());
+        assert_eq!(p.scale, 2);
         p.apply(&PrefsPatch {
             dock: Some(DockPatch { expanded: Some(false), position: Some(DockPosition { x: 10.0, y: 20.0 }), ..Default::default() }),
             ..Default::default()
         });
-        assert!(!p.dock.expanded && p.dock.visible);
+        assert!(!p.dock.expanded && !p.dock.visible);
         assert_eq!(p.dock.position, Some(DockPosition { x: 10.0, y: 20.0 }));
         p.apply(&PrefsPatch { dock: Some(DockPatch { reset_position: true, ..Default::default() }), ..Default::default() });
         assert_eq!(p.dock.position, None);

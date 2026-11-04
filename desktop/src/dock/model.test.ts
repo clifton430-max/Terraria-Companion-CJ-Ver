@@ -84,7 +84,7 @@ describe("dock weapon slots", () => {
 
 describe("dock prefs and layout", () => {
   it("normalizes missing, stale or corrupt dock prefs", () => {
-    expect(normalizeDock(undefined)).toEqual({ visible: true, onLaunch: "remember", expanded: true, layout: "full", position: null });
+    expect(normalizeDock(undefined)).toEqual({ visible: false, onLaunch: "remember", expanded: true, layout: "full", position: null });
     expect(normalizeDock({ layout: "huge" as never, onLaunch: "x" as never, position: { x: NaN, y: 1 } })).toMatchObject({ layout: "full", onLaunch: "remember", position: null });
     expect(normalizeDock({ visible: false, expanded: false, layout: "compact", position: { x: 5, y: 6 } })).toMatchObject({ visible: false, expanded: false, layout: "compact", position: { x: 5, y: 6 } });
   });

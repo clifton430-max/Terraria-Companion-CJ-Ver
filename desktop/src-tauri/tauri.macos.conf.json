@@ -1,0 +1,12 @@
+{
+  "build": {
+    "beforeDevCommand": "sh src-tauri/helpers/build.sh && npm run dev",
+    "beforeBuildCommand": "sh src-tauri/helpers/build.sh && npm run build"
+  },
+  "bundle": {
+    "externalBin": [
+      "bin/speech-helper",
+      "bin/ocr-helper"
+    ]
+  }
+}
